@@ -1,0 +1,23 @@
+{
+  "name": "engineering-workflow",
+  "displayName": "Engineering Workflow Suite",
+  "version": "1.1.0",
+  "description": "Production engineering workflow: code explainer, deep audit & hygiene, isolated testing without database wipes, root cause debugging, behavior-preserving refactoring, continuous documentation, UX auditing, and master feature orchestration.",
+  "author": {
+    "name": "Engineering Team"
+  },
+  "license": "MIT",
+  "icon": "assets/icon.svg",
+  "keywords": [
+    "workflow",
+    "audit",
+    "tests",
+    "debug",
+    "refactor",
+    "docs",
+    "ux",
+    "feature",
+    "explain"
+  ]
+}
+
