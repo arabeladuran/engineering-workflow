@@ -1,8 +1,8 @@
 {
   "name": "engineering-workflow",
   "displayName": "Engineering Workflow Suite",
-  "version": "1.1.0",
-  "description": "Production engineering workflow: code explainer, deep audit & hygiene, isolated testing without database wipes, root cause debugging, behavior-preserving refactoring, continuous documentation, UX auditing, and master feature orchestration.",
+  "version": "1.2.0",
+  "description": "Production engineering workflow: code explainer, deep audit & hygiene, dead code & feature decommission cleanup, isolated testing without database wipes, root cause debugging, behavior-preserving refactoring, continuous documentation, UX auditing, and master feature orchestration.",
   "author": {
     "name": "Engineering Team"
   },
@@ -17,7 +17,8 @@
     "docs",
     "ux",
     "feature",
-    "explain"
+    "explain",
+    "cleanup"
   ]
 }
 
