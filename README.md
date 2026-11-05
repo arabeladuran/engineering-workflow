@@ -8,7 +8,7 @@ Production engineering workflow plugin for Google Antigravity. Provides structur
 
 | Command | Skill | Description |
 | :--- | :--- | :--- |
-| `/refactor` | [`refactor`](skills/refactor/SKILL.md) | Restructures and cleans code while strictly preserving external contracts, API responses, and database schemas. |
+| `/refactor` | [`refactor`](skills/refactor/SKILL.md) | Restructures and cleans code with a plan-first approval gate, strictly preserving external contracts, API responses, and database schemas. |
 | `/feature` | [`feature`](skills/feature/SKILL.md) | Master 10-phase engineering pipeline from `/grill-me` requirements to verified deployment package. |
 | `/audit` | [`audit`](skills/audit/SKILL.md) | Static code analysis: dead code, DRY violations, import hygiene, and Eloquent model hydration rules. |
 | `/tests` | [`tests`](skills/tests/SKILL.md) | Generates Pest PHP & Vitest test suites with strict database transaction isolation (no database wipes). |
