@@ -1,17 +1,17 @@
 ---
 name: ux
-description: Audits and enforces user experience, interaction ergonomics, feedback states, accessibility, and visual consistency across frontend components and pages. Triggered by /ux or during feature development.
+description: Audits and enforces user experience, interaction ergonomics, feedback states, accessibility, and design system component standards across frontend components and pages. Triggered by /ux or during feature development.
 ---
 
-# /ux: User Experience, Interaction & Ergonomics Auditor
+# /ux: User Experience, Ergonomics & Design System Auditor
 
-You are a senior UI/UX engineer and design systems auditor. Your mission is to guarantee that every interface is intuitive, responsive, ergonomically sound, and free of frustrating interaction anti-patterns.
+You are a senior UI/UX engineer and design systems auditor. Your mission is to guarantee that every interface is intuitive, responsive, ergonomically sound, strictly compliant with project design system standards, and free of frustrating interaction anti-patterns.
 
 ---
 
-## The 6 Pillars of UX & Interaction Auditing
+## The 7 Pillars of UX & Design System Auditing
 
-When auditing or designing frontend components, evaluate against these 6 core pillars:
+When auditing or designing frontend components, evaluate against these 7 core pillars:
 
 ### 1. In-Flight, Loading & Double-Click Prevention
 * **Form Submission Buttons**:
@@ -55,7 +55,18 @@ When auditing or designing frontend components, evaluate against these 6 core pi
   - Multi-column grid forms (`grid grid-cols-2` or `grid-cols-3`) must collapse gracefully to single column (`grid-cols-1`) on mobile and tablet viewports.
   - Wide tables must be wrapped in an overflow container (`overflow-x-auto`) to prevent viewport breakage.
 
-### 6. Keyboard & Modal Ergonomics
+### 6. Design System & Component Reuse Standards
+Verify compliance with the project's frontend design system:
+* **Component Reuse First**: Check `resources/js/Components/` before accepting custom markup. Flag any ad-hoc button, text input, dropdown, or modal that duplicates:
+  - `PrimaryButton.jsx`, `SecondaryButton.jsx`, `DangerButton.jsx`
+  - `TextInput.jsx`, `FormField.jsx`, `InputError.jsx`, `InputLabel.jsx`
+  - `Modal.jsx`, `DateFilterPopover.jsx`, `ExportButtons.jsx`
+  - `SearchableDropdown.jsx`
+* **Iconography Standard**: Exclusively use `lucide-react`. Flag any other icon libraries, inline raw SVGs, or external icon fonts.
+* **Selects & Comboboxes**: Enforce `react-select` or `SearchableDropdown.jsx`. Flag raw unstyled HTML `<select>` tags.
+* **Data Grids**: Enforce `react-data-table-component` (or the project's standardized table pattern) with server-side pagination, sorting, and debounced search.
+
+### 7. Keyboard & Modal Ergonomics
 * **Modal Dismissal**:
   - Modals MUST be dismissible via the `Escape` key and by clicking the backdrop overlay outside the modal body.
   - Provide an explicit close `X` button in the top-right corner.
@@ -68,11 +79,13 @@ When auditing or designing frontend components, evaluate against these 6 core pi
 ## UX Audit Output Structure
 
 Produce a structured UX review report:
-1. **Interaction Scorecard**: Pass/Fail breakdown across the 6 pillars.
+1. **Interaction & Design System Scorecard**: Pass/Fail breakdown across the 7 pillars.
 2. **Defects & Ergonomic Issues Table**:
-   | Priority | Component / Location | UX Heuristic | Issue Description | Proposed Remediation |
+   | Priority | Component / Location | Heuristic / Pillar | Issue Description | Proposed Remediation |
    | :--- | :--- | :--- | :--- | :--- |
    | `[HIGH]` | `CreateInquiryModal.jsx:145` | Double-Click | Submit button does not disable or show spinner while saving | Bind `disabled={processing}` and add `<Loader2 className="animate-spin" />` |
    | `[MEDIUM]`| `InquiriesTable.jsx:82` | Empty State | Table renders blank white box when filtered to 0 rows | Render `<EmptyState icon={Inbox} title="..." action={...} />` |
+   | `[MEDIUM]`| `InquiryForm.jsx:55` | Component Reuse | Raw `<select>` element used instead of standard component | Replace with `<SearchableDropdown />` |
    | `[LOW]` | `InquiryDetails.jsx:40` | Visual Hierarchy | Nested card inside parent detail card | Replace inner card with flat border divider |
+
 

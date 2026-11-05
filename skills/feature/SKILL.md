@@ -17,9 +17,9 @@ flowchart TD
     P2 --> P3["Phase 3: /plan<br/>Draft Multi-Layer Implementation Plan"]
     P3 --> P4{"Phase 4: Approval Gate<br/>HALT: Await User Review & Edits"}
     P4 -->|Approved| P5["Phase 5: Implementation<br/>Execute Modular Code Changes"]
-    P5 --> P6["Phase 6: Quality Audits<br/>Run /audit & /ux"]
-    P6 --> P7["Phase 7: Test Generation<br/>Run /tests (Pest + Vitest)"]
-    P7 --> P8["Phase 8: Auto-Fix Findings<br/>Resolve Critical, Warning, Perf & UX"]
+    P5 --> P6["Phase 6: Quality Audits<br/>Delegate to Subagent (Audit + UX)"]
+    P6 --> P7["Phase 7: Test Generation<br/>Delegate to Subagent (Pest + Vitest)"]
+    P7 --> P8["Phase 8: Auto-Fix Findings<br/>Resolve Critical, Security, Perf & UX"]
     P8 --> P9["Phase 9: Documentation Sync<br/>Run /docs (AGENTS.md, docs/*, ADRs)"]
     P9 --> P10["Phase 10: Final Verification<br/>Verify Suite & Deliver Artifact Package"]
 ```
@@ -66,33 +66,41 @@ flowchart TD
   - Step 3: Controller endpoints and route definitions.
   - Step 4: Frontend Inertia pages and UI components adhering strictly to UI standards (flat layouts, no nested cards, Lucide icons, `react-select`/`SearchableDropdown`, `react-data-table-component`).
 
-### Phase 6: Independent Quality Audits (`/audit` & `/ux`)
-* Run the `/audit` skill heuristics on all modified and newly created files:
-  - Check dead code, DRY violations, overly defensive code, unnecessary complexity.
-  - Check import normalization and export hygiene.
-  - Verify model hydration avoidance on index queries (enforcing `DB::table(...)` or `select(...)`).
-  - Verify UI compliance (no nested cards, component reuse, Lucide icons, Spatie activity logging).
-* Run the `/ux` skill heuristics on all frontend interfaces:
-  - Verify loading spinners on submit buttons during request in-flight.
-  - Verify debounced search queries.
-  - Verify helpful empty states.
-  - Verify SweetAlert2/toast feedback and confirmation dialogs for destructive actions.
+### Phase 6: Quality & Security Audits (Delegated Subagent)
 
-### Phase 7: Automated Test Generation & Execution (`/tests`)
+> [!TIP]
+> **CONTEXT PRESERVATION**:
+> Run audits in a dedicated subagent via `invoke_subagent`. Reading and analyzing dozens of code files in the primary orchestrator bloats context and degrades performance in subsequent phases.
+
+* Launch an auditor subagent using `invoke_subagent`:
+  - `TypeName`: `"self"`
+  - `Role`: `"Code & UX Auditor"`
+  - `Prompt`: Instruct the subagent to inspect the modified files (`git status` / `git diff`) and apply:
+    1. **`/audit` heuristics**: dead code, DRY, import hygiene, Eloquent hydration avoidance, N+1 queries, authorization checks (Gates, FormRequests, IDOR tenant scoping), and Spatie activity logging.
+    2. **`/ux` heuristics**: loading spinners, debounced search, empty states, feedback toasts, destructive modals, flat layout (strictly no nested cards), and component reuse (`lucide-react`, `SearchableDropdown`).
+  - Instruct the subagent to return **only** the structured Scorecard and Findings Table (no raw file dumps).
+* Await the subagent's response.
+
+### Phase 7: Automated Test Generation & Execution (Delegated Subagent)
 
 > [!CAUTION]
 > **DATABASE PRESERVATION MANDATE**:
 > Tests must use `DatabaseTransactions` trait so that test data rolls back automatically. **NEVER run `migrate:fresh`, `migrate:refresh`, or `db:wipe` on the active development database.**
 
-* Invoke `/tests` to generate:
-  - Backend Pest PHP feature tests covering happy path, boundary values, invalid inputs, and role authorization.
-  - Frontend Vitest tests covering component rendering, user interactions, and empty states.
-* Execute the test suite and verify test results.
+* Launch a test-runner subagent using `invoke_subagent`:
+  - `TypeName`: `"self"`
+  - `Role`: `"Test Suite Engineer"`
+  - `Prompt`: Instruct the subagent to:
+    1. Write Pest PHP feature tests covering happy path, boundary values, invalid inputs, and role authorization.
+    2. Write Vitest tests for newly created or modified React/Inertia components.
+    3. Execute the tests (`vendor/bin/pest` and `npm test` or `npx vitest run`).
+    4. Return **only** the pass/fail summary, test execution counts, and details of any failing assertions.
+* Await the test runner's report.
 
 ### Phase 8: Auto-Fix Justified Findings
 * Automatically remediate all verified defects:
-  - Fix any `[CRITICAL]`, `[WARNING]`, `[PERFORMANCE]`, or `[DESIGN_SYSTEM]` audit findings.
-  - Fix any `[HIGH]` or `[MEDIUM]` UX findings.
+  - Fix any `[CRITICAL]` (security, authorization, breaking bugs), `[PERFORMANCE]`, or `[WARNING]` audit findings.
+  - Fix any `[HIGH]` or `[MEDIUM]` UX and design system findings.
   - Fix any failing assertions in the test suite.
 * Catalog any non-blocking `[SUGGESTION/NIT]` items in the audit report for user information.
 

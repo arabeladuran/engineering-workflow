@@ -11,14 +11,21 @@ Production engineering workflow plugin for Google Antigravity. Provides structur
 | `/feature` | [`feature`](skills/feature/SKILL.md) | Master 10-phase engineering pipeline from `/grill-me` requirements to verified deployment package. |
 | `/refactor` | [`refactor`](skills/refactor/SKILL.md) | Restructures and cleans code with a plan-first approval gate, strictly preserving external contracts, API responses, and database schemas. |
 | `/cleanup` | [`cleanup`](skills/cleanup/SKILL.md) | Safely removes dead code or decommissions features using pre/post `/audit` scans and a plan-first approval gate. |
-| `/audit` | [`audit`](skills/audit/SKILL.md) | Static code analysis: dead code, DRY violations, import hygiene, and Eloquent model hydration rules. |
+| `/audit` | [`audit`](skills/audit/SKILL.md) | Static code analysis: dead code, DRY, import hygiene, query/hydration performance, authorization & security. |
 | `/tests` | [`tests`](skills/tests/SKILL.md) | Generates Pest PHP & Vitest test suites with strict database transaction isolation (no database wipes). |
 | `/debug` | [`debug`](skills/debug/SKILL.md) | Systematic 5-step Root Cause Analysis (RCA) with minimal surgical fixes. |
 | `/docs` | [`docs`](skills/docs/SKILL.md) | Synchronizes persistent documentation (`AGENTS.md`, `docs/*`, Architectural Decision Records). |
 | `/explain` | [`explain`](skills/explain/SKILL.md) | Deep architectural and behavioral code explanations without side-effects. |
-| `/ux` | [`ux`](skills/ux/SKILL.md) | Frontend UX, feedback states, debounced inputs, empty states, and accessibility auditor. |
+| `/ux` | [`ux`](skills/ux/SKILL.md) | Frontend UX, ergonomics, feedback states, accessibility, and design system component standards. |
 
 ---
+
+## Target Tech Stack
+
+While the workflows enforce universal engineering best practices, templates and defaults are tailor-made for:
+- **Backend:** Laravel, PHP 8+, Pest PHP (with strict transaction rollback testing)
+- **Frontend:** React, TypeScript / JavaScript, Inertia.js, Tailwind CSS, Lucide icons
+- **Testing:** Pest PHP (feature & integration) + Vitest / React Testing Library (client UI)
 
 ## Installation on Any Device
 
